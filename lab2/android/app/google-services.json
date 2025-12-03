@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "167468118462",
+    "project_id": "lab3laststand",
+    "storage_bucket": "lab3laststand.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:167468118462:android:76d941597dbe01331109ef",
+        "android_client_info": {
+          "package_name": "com.example.lab1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq-3HsBDP0cQp2LhrXbb4jxgD8oiIVeHE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

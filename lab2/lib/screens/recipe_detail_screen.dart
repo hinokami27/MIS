@@ -1,8 +1,10 @@
-// screens/recipe_detail_screen.dart
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/recipe.dart';
+import '../models/meal.dart';
 import '../services/meal_api_service.dart';
+import '../services/favorites_service.dart';
 
 class RecipeDetailScreen extends StatelessWidget {
   final String mealId;
@@ -26,14 +28,55 @@ class RecipeDetailScreen extends StatelessWidget {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
+
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final favoritesService = Provider.of<FavoritesService>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Детален рецепт'),
+        actions: [
+          FutureBuilder<Recipe>(
+            future: _loadRecipe(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+                final recipe = snapshot.data!;
+                final isFavorite = favoritesService.isFavorite(recipe.idMeal);
+                final meal = Meal(
+                    idMeal: recipe.idMeal,
+                    strMeal: recipe.strMeal,
+                    strMealThumb: recipe.strMealThumb
+                );
+
+                return IconButton(
+                  icon: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : Colors.white,
+                  ),
+                  onPressed: () {
+                    favoritesService.toggleFavorite(meal);
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isFavorite
+                              ? '${recipe.strMeal} отстранет од омилени.'
+                              : '${recipe.strMeal} додаден во омилени.',
+                        ),
+                        duration: const Duration(seconds: 1),
+                      ),
+                    );
+                  },
+                );
+              }
+              return const SizedBox.shrink(); // Не покажувај ништо додека се вчитува
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<Recipe>(
         future: _loadRecipe(),
@@ -47,7 +90,7 @@ class RecipeDetailScreen extends StatelessWidget {
           }
 
           final recipe = snapshot.data!;
-
+          // ... (остатокот од Widget build)
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Column(

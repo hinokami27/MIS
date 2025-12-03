@@ -1,9 +1,8 @@
-// screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../models/category.dart';
 import '../services/meal_api_service.dart';
 import '../widgets/category_card.dart';
-import 'recipe_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -44,39 +43,23 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _fetchRandomRecipe() async {
-    try {
-      final recipe = await _apiService.fetchRandomRecipe();
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => RecipeDetailScreen(
-            mealId: recipe.idMeal,
-            initialRecipe: recipe,
-          ),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Неуспешно вчитување на рандом рецепт.')),
-      );
-    }
+
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterCategories);
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Рецепти по категории'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shuffle),
-            tooltip: 'Рандом рецепт на денот',
-            onPressed: _fetchRandomRecipe,
-          ),
-        ],
+        title: const Text('Категории на Рецепти'),
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
